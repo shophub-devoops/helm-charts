@@ -1,1 +1,59 @@
-﻿# Override values here
+## Default values for shop-operator chart.
+
+image:
+  # The shop-operator container image. Build with `make docker-build` in the
+  # shop-operator repo, push to your registry, and set repository here.
+  repository: docker.io/shophub-devoops/shop-operator
+  # Defaults to .Chart.AppVersion when empty.
+  tag: ""
+  pullPolicy: IfNotPresent
+
+# Override the chart name. Empty values let templates derive sensible defaults.
+nameOverride: ""
+fullnameOverride: ""
+
+# Single replica is the supported configuration. Multi-replica needs
+# leader election (set leaderElection: true) to avoid duplicate reconciles.
+replicaCount: 1
+leaderElection: false
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+serviceAccount:
+  create: true
+  # Empty = derive from chart fullname.
+  name: ""
+  annotations: {}
+
+# /metrics endpoint exposed by controller-runtime. Disable if you don't run
+# Prometheus / don't want the Service in the cluster.
+metricsService:
+  enabled: true
+  port: 8443
+
+# Health probe endpoints (controller-runtime serves /healthz and /readyz on
+# --health-probe-bind-address).
+probes:
+  liveness:
+    httpGet:
+      path: /healthz
+      port: 8081
+    initialDelaySeconds: 15
+    periodSeconds: 20
+  readiness:
+    httpGet:
+      path: /readyz
+      port: 8081
+    initialDelaySeconds: 5
+    periodSeconds: 10
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+podAnnotations: {}

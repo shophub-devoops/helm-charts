@@ -1,6 +1,16 @@
-﻿apiVersion: v2
+apiVersion: v2
 name: shop-operator
-description: Shop operator (CRDs + controller)
+description: Kubernetes operator that orchestrates Shop applications for ShopHub.
 type: application
 version: 0.1.0
 appVersion: "0.1.0"
+kubeVersion: ">=1.30.0"
+home: https://github.com/shophub-devoops/shop-operator
+sources:
+  - https://github.com/shophub-devoops/shop-operator
+maintainers:
+  - name: shophub-devoops team
+keywords:
+  - shophub
+  - operator
+  - kubebuilder
