@@ -1,0 +1,51 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "shop-operator.fullname" . }}-manager
+  labels:
+    {{- include "shop-operator.labels" . | nindent 4 }}
+rules:
+  - apiGroups: [""]
+    resources: ["secrets", "serviceaccounts", "services"]
+    verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
+  - apiGroups: ["rbac.authorization.k8s.io"]
+    resources: ["roles", "rolebindings"]
+    verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
+  # Our CRDs
+  - apiGroups: ["apps.shophub.local"]
+    resources: ["shops"]
+    verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
+  - apiGroups: ["apps.shophub.local"]
+    resources: ["shops/status"]
+    verbs: ["get", "patch", "update"]
+  - apiGroups: ["apps.shophub.local"]
+    resources: ["shops/finalizers"]
+    verbs: ["update"]
+  - apiGroups: ["notify.shophub.local"]
+    resources: ["discordchannels"]
+    verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
+  - apiGroups: ["notify.shophub.local"]
+    resources: ["discordchannels/status"]
+    verbs: ["get", "patch", "update"]
+  - apiGroups: ["notify.shophub.local"]
+    resources: ["discordchannels/finalizers"]
+    verbs: ["update"]
+  - apiGroups: ["payments.shophub.local"]
+    resources: ["wallets"]
+    verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
+  - apiGroups: ["payments.shophub.local"]
+    resources: ["wallets/status"]
+    verbs: ["get", "patch", "update"]
+  - apiGroups: ["payments.shophub.local"]
+    resources: ["wallets/finalizers"]
+    verbs: ["update"]
+  # External database CRDs we manage child resources of
+  - apiGroups: ["postgresql.cnpg.io"]
+    resources: ["clusters"]
+    verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
+  - apiGroups: ["mongodbcommunity.mongodb.com"]
+    resources: ["mongodbcommunity"]
+    verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
