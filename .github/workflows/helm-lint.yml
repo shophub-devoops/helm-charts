@@ -1,0 +1,37 @@
+name: Helm Lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    name: Run on Ubuntu
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: latest
+
+      - name: Lint all charts
+        run: |
+          set -e
+          for chart in charts/*/; do
+            echo "::group::helm lint $chart"
+            helm lint "$chart"
+            echo "::endgroup::"
+          done
+
+      - name: Template all charts (sanity check)
+        run: |
+          set -e
+          for chart in charts/*/; do
+            name=$(basename "$chart")
+            echo "::group::helm template demo $chart"
+            helm template demo "$chart" --namespace "$name-system" > /dev/null
+            echo "::endgroup::"
+          done
