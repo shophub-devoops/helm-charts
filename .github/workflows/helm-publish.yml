@@ -1,0 +1,57 @@
+name: Helm Publish
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+
+jobs:
+  publish:
+    name: Package and push charts to DockerHub OCI
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: latest
+
+      - name: Compute version suffix
+        id: meta
+        run: |
+          # Tag v* -> prazan suffix, koristi se Chart.yaml verzija (release).
+          # Push na main -> SemVer prerelease -dev.YYYYMMDD.<short sha>.
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            echo "suffix=" >> $GITHUB_OUTPUT
+          else
+            echo "suffix=-dev.$(date -u +%Y%m%d).${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Login to DockerHub OCI registry
+        run: |
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | helm registry login registry-1.docker.io \
+            -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Package and push all charts
+        run: |
+          set -e
+          mkdir -p /tmp/charts
+          for chart in charts/*/; do
+            name=$(basename "$chart")
+            base_version=$(grep '^version:' "$chart/Chart.yaml" | awk '{print $2}' | tr -d '"')
+            version="${base_version}${{ steps.meta.outputs.suffix }}"
+            echo "::group::Package $name version $version"
+            helm package "$chart" --version "$version" --destination /tmp/charts
+            echo "::endgroup::"
+            echo "::group::Push $name to oci://registry-1.docker.io/${{ secrets.DOCKERHUB_USERNAME }}"
+            helm push "/tmp/charts/${name}-${version}.tgz" \
+              "oci://registry-1.docker.io/${{ secrets.DOCKERHUB_USERNAME }}"
+            echo "::endgroup::"
+          done
+
+      - name: Logout from DockerHub OCI registry
+        if: always()
+        run: helm registry logout registry-1.docker.io || true
