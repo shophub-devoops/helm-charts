@@ -1,0 +1,62 @@
+{{- /*
+PrometheusRule shipped with the operator. Prometheus auto-discovers it
+(kube-state sets ruleSelectorNilUsesHelmValues=false). Shop alerts group by
+namespace + service so each firing alert carries a `namespace` label — that's
+what the per-Shop AlertmanagerConfig (OnNamespace strategy) routes on.
+
+Prometheus templating uses {{ $labels.x }} which collides with Helm's
+delimiters, so those expressions are wrapped in {{`...`}} to emit literally.
+*/ -}}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ include "shop-operator.fullname" . }}-alerts
+  labels:
+    {{- include "shop-operator.labels" . | nindent 4 }}
+spec:
+  groups:
+    - name: shop.rules
+      rules:
+        - alert: ShopHighErrorRate
+          expr: |
+            sum by (namespace, service) (rate(shop_http_requests_total{status=~"4..|5.."}[5m]))
+            /
+            sum by (namespace, service) (rate(shop_http_requests_total[5m]))
+            > 0.1
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: {{`"High error rate on Shop {{ $labels.service }}"`}}
+            description: {{`"{{ $labels.namespace }}/{{ $labels.service }} returned {{ $value | humanizePercentage }} error responses (4xx/5xx) over the last 5m."`}}
+        - alert: ShopHighLatency
+          expr: |
+            histogram_quantile(0.95,
+              sum by (namespace, service, le) (rate(shop_http_request_duration_seconds_bucket[5m]))
+            ) > 1
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: {{`"High p95 latency on Shop {{ $labels.service }}"`}}
+            description: {{`"p95 request latency is {{ $value }}s for {{ $labels.namespace }}/{{ $labels.service }}."`}}
+    - name: cluster.rules
+      rules:
+        - alert: NodeHighMemory
+          expr: |
+            (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) > 0.9
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: {{`"Node {{ $labels.instance }} memory above 90%"`}}
+            description: {{`"Node {{ $labels.instance }} memory usage is {{ $value | humanizePercentage }}."`}}
+        - alert: NodeHighCPU
+          expr: |
+            (1 - avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m]))) > 0.9
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: {{`"Node {{ $labels.instance }} CPU above 90%"`}}
+            description: {{`"Node {{ $labels.instance }} CPU usage is {{ $value | humanizePercentage }}."`}}
