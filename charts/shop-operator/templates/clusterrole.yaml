@@ -49,3 +49,7 @@ rules:
   - apiGroups: ["mongodbcommunity.mongodb.com"]
     resources: ["mongodbcommunity"]
     verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
+  # Prometheus operator types (kube-prometheus-stack) for per-Shop scrape config
+  - apiGroups: ["monitoring.coreos.com"]
+    resources: ["servicemonitors"]
+    verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
