@@ -12,6 +12,10 @@ kind: PrometheusRule
 metadata:
   name: {{ include "shop-operator.fullname" . }}-alerts
   labels:
+    # kube-prometheus-stack's Prometheus selects rules by this label
+    # (ruleSelector matchLabels release=kube-prometheus-stack). The operator's
+    # ServiceMonitor sets the same label for the same reason.
+    release: kube-prometheus-stack
     {{- include "shop-operator.labels" . | nindent 4 }}
 spec:
   groups:
