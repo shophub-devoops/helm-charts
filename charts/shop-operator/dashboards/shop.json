@@ -180,10 +180,75 @@
       "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] }
     },
     {
+      "type": "timeseries",
+      "title": "CPU usage (cores)",
+      "id": 9,
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 20 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "expr": "sum(rate(container_cpu_usage_seconds_total{pod=~\"$shop-.*\", container=\"shop\"}[5m]))",
+          "legendFormat": "cores",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] }
+    },
+    {
+      "type": "timeseries",
+      "title": "Memory working set (bytes)",
+      "id": 10,
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 20 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "expr": "sum(container_memory_working_set_bytes{pod=~\"$shop-.*\", container=\"shop\"})",
+          "legendFormat": "memory",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "bytes" }, "overrides": [] }
+    },
+    {
+      "type": "timeseries",
+      "title": "Filesystem usage (bytes)",
+      "id": 11,
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 28 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "expr": "sum(container_fs_usage_bytes{pod=~\"$shop-.*\", container=\"shop\"})",
+          "legendFormat": "fs used",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "bytes" }, "overrides": [] }
+    },
+    {
+      "type": "timeseries",
+      "title": "Network I/O (bytes/s)",
+      "id": 12,
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 28 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "expr": "sum(rate(container_network_receive_bytes_total{pod=~\"$shop-.*\", pod!~\".*-[0-9]+$\"}[5m]))",
+          "legendFormat": "rx",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(rate(container_network_transmit_bytes_total{pod=~\"$shop-.*\", pod!~\".*-[0-9]+$\"}[5m]))",
+          "legendFormat": "tx",
+          "refId": "B"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "Bps" }, "overrides": [] }
+    },
+    {
       "type": "text",
       "title": "Note",
       "id": 8,
-      "gridPos": { "h": 4, "w": 24, "x": 0, "y": 20 },
+      "gridPos": { "h": 4, "w": 24, "x": 0, "y": 36 },
       "options": {
         "mode": "markdown",
         "content": "**Jedinstveni posetioci** (zahtev 4.1.d): preskočeno u Prometheus-u zbog visoke kardinalnosti IP + User-Agent. Bićе dodato kao Loki distinct query kad observability stack iz D8 bude na klasteru."
