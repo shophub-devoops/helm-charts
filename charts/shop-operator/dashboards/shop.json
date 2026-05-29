@@ -211,15 +211,20 @@
     },
     {
       "type": "timeseries",
-      "title": "Filesystem usage (bytes)",
+      "title": "Filesystem usage — DB volume (bytes)",
       "id": 11,
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 28 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         {
-          "expr": "sum(container_fs_usage_bytes{pod=~\"$shop-.*\", container=\"shop\"})",
-          "legendFormat": "fs used",
+          "expr": "sum(kubelet_volume_stats_used_bytes{persistentvolumeclaim=~\"$shop-.*\"})",
+          "legendFormat": "used",
           "refId": "A"
+        },
+        {
+          "expr": "sum(kubelet_volume_stats_capacity_bytes{persistentvolumeclaim=~\"$shop-.*\"})",
+          "legendFormat": "capacity",
+          "refId": "B"
         }
       ],
       "fieldConfig": { "defaults": { "unit": "bytes" }, "overrides": [] }
