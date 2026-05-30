@@ -250,13 +250,32 @@
       "fieldConfig": { "defaults": { "unit": "Bps" }, "overrides": [] }
     },
     {
+      "type": "stat",
+      "title": "Unique visitors (24h)",
+      "id": 13,
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 36 },
+      "datasource": { "type": "loki", "uid": "P8E80F9AEF21F6940" },
+      "targets": [
+        {
+          "expr": "count(sum by (client_ip, user_agent) (count_over_time({app=\"$shop\"} | json | client_ip != \"\" [24h])))",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": { "calcs": ["lastNotNull"] }
+      },
+      "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] }
+    },
+    {
       "type": "text",
       "title": "Note",
       "id": 8,
-      "gridPos": { "h": 4, "w": 24, "x": 0, "y": 36 },
+      "gridPos": { "h": 4, "w": 18, "x": 6, "y": 36 },
       "options": {
         "mode": "markdown",
-        "content": "**Jedinstveni posetioci** (zahtev 4.1.d): preskočeno u Prometheus-u zbog visoke kardinalnosti IP + User-Agent. Bićе dodato kao Loki distinct query kad observability stack iz D8 bude na klasteru."
+        "content": "**Jedinstveni posetioci** (zahtev 4.1.d): broji distinct `(client_ip, user_agent)` parove iz Loki logova preko `count(sum by (client_ip, user_agent) (count_over_time(...[24h])))`. Visoka kardinalnost IP+UA je razlog što ide kroz logove (Loki), ne kroz Prometheus metrike."
       }
     }
   ],
