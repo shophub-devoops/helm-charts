@@ -1,1 +1,42 @@
-﻿# Override values here
+## ShopHub backend deployment values.
+
+image:
+  repository: docker.io/urospetraskovic/shophub-backend
+  # Defaults to .Chart.AppVersion when empty.
+  tag: ""
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    memory: 256Mi
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  name: ""
+
+service:
+  port: 8080
+
+# CloudNativePG Postgres for the users table (auth). The backend creates the
+# schema on startup; we just provision an empty database here.
+database:
+  storageSize: 1Gi
+
+# JWT signing secret. Leave empty to let the chart generate one and preserve it
+# across upgrades (via lookup); set explicitly for a stable secret across
+# reinstalls or to share across replicas in multi-cluster setups.
+jwtSecret: ""
+
+# ServiceMonitor registers the backend's /metrics with the (shared,
+# kube-state-managed) kube-prometheus-stack — spec 3.3 "uses prometheus-stack".
+serviceMonitor:
+  enabled: true
+  interval: 15s

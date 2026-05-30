@@ -1,0 +1,15 @@
+ShopHub backend deployed as {{ include "shophub.fullname" . }} in namespace {{ .Release.Namespace }}.
+
+Users database (CloudNativePG): {{ include "shophub.fullname" . }}-db
+JWT secret:                     {{ include "shophub.fullname" . }}-jwt
+
+Try it (port-forward then register a user):
+
+  kubectl -n {{ .Release.Namespace }} port-forward svc/{{ include "shophub.fullname" . }} 8080:{{ .Values.service.port }}
+
+  curl -X POST http://localhost:8080/api/auth/register \
+    -H 'Content-Type: application/json' \
+    -d '{"email":"you@example.com","password":"changeme123"}'
+
+The response contains a JWT and the per-user tenant namespace. Use the token as
+`Authorization: Bearer <token>` against /api/shops.
