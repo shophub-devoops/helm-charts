@@ -50,6 +50,7 @@ rules:
     resources: ["mongodbcommunity"]
     verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
   # Prometheus operator types (kube-prometheus-stack) for per-Shop scrape config
+  # and per-Shop Discord alert routing
   - apiGroups: ["monitoring.coreos.com"]
-    resources: ["servicemonitors"]
+    resources: ["servicemonitors", "alertmanagerconfigs"]
     verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
