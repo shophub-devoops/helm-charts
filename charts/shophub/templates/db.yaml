@@ -1,0 +1,19 @@
+{{- /*
+CloudNativePG cluster for the ShopHub users table. CNPG publishes a
+"<name>-app" Secret with a `uri` connection string the backend reads as
+DATABASE_URL. The backend creates the users schema on startup.
+*/ -}}
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ include "shophub.fullname" . }}-db
+  labels:
+    {{- include "shophub.labels" . | nindent 4 }}
+spec:
+  instances: 1
+  bootstrap:
+    initdb:
+      database: shophub
+      owner: shophub
+  storage:
+    size: {{ .Values.database.storageSize }}

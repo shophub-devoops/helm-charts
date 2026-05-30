@@ -1,0 +1,36 @@
+{{- /*
+ShopHub backend manages each user's Shop CRs in that user's own tenant
+namespace, which it creates at registration — so it needs cluster-wide access
+to namespaces and to the Shop CRD (uses the Shop operator's CRD, spec 3.3).
+*/ -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "shophub.fullname" . }}
+  labels:
+    {{- include "shophub.labels" . | nindent 4 }}
+rules:
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs: ["get", "list", "watch", "create", "delete"]
+  - apiGroups: ["apps.shophub.local"]
+    resources: ["shops"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["apps.shophub.local"]
+    resources: ["shops/status"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "shophub.fullname" . }}
+  labels:
+    {{- include "shophub.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "shophub.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "shophub.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}

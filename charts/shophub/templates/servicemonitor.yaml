@@ -1,0 +1,22 @@
+{{- if .Values.serviceMonitor.enabled -}}
+{{- /*
+Uses the prometheus-stack ServiceMonitor CRD (monitoring.coreos.com) to register
+the backend's /metrics for scraping. The `release: kube-prometheus-stack` label
+is what the shared stack's Prometheus selects on.
+*/ -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "shophub.fullname" . }}
+  labels:
+    release: kube-prometheus-stack
+    {{- include "shophub.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "shophub.selectorLabels" . | nindent 6 }}
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: {{ .Values.serviceMonitor.interval }}
+{{- end }}
