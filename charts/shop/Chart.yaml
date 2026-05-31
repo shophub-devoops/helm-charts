@@ -1,6 +1,6 @@
 ﻿apiVersion: v2
 name: shop
-description: Shop application (backend + frontend)
+description: Creates a Shop custom resource for the shop-operator to reconcile.
 type: application
 version: 0.1.0
 appVersion: "0.1.0"
