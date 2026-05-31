@@ -1,1 +1,28 @@
-﻿# Override values here
+# This chart only creates a Shop custom resource (and an optional Discord
+# webhook Secret). The shop-operator must already be installed; it reconciles
+# the Shop into a Deployment, Service, database and monitoring.
+
+# title is the storefront display name shown to buyers.
+title: "My Shop"
+
+# availability maps to replica count: standard=2, high=3.
+availability: standard
+
+# database backend: postgres or mongodb.
+database: postgres
+
+# walletAddress is the on-chain payment recipient. Set it to a real address;
+# left empty the shop runs but on-chain payment verification stays disabled.
+walletAddress: ""
+
+# replicas optionally overrides the availability-derived count (the kubectl
+# scale / HPA target). Leave null to let availability decide.
+replicas: null
+
+# image optionally overrides the Shop backend container image.
+image: ""
+
+discord:
+  # If set, a Secret holding this Discord webhook URL is created and referenced
+  # by the Shop so its alerts route to Discord. Pass via --set; never commit it.
+  webhookUrl: ""

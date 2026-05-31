@@ -1,0 +1,26 @@
+{{- /*
+The Shop custom resource. The shop-operator reconciles it into a Deployment,
+Service, database (CNPG/MongoDB) and monitoring. This chart is a convenience
+wrapper around `kubectl apply` of a Shop manifest.
+*/ -}}
+apiVersion: apps.shophub.local/v1
+kind: Shop
+metadata:
+  name: {{ include "shop.fullname" . }}
+  labels:
+    {{- include "shop.labels" . | nindent 4 }}
+spec:
+  title: {{ .Values.title | quote }}
+  availability: {{ .Values.availability }}
+  database: {{ .Values.database }}
+  walletAddress: {{ .Values.walletAddress | quote }}
+  {{- with .Values.replicas }}
+  replicas: {{ . }}
+  {{- end }}
+  {{- with .Values.image }}
+  image: {{ . | quote }}
+  {{- end }}
+  {{- if .Values.discord.webhookUrl }}
+  discordWebhookSecretRef:
+    name: {{ include "shop.fullname" . }}-discord
+  {{- end }}

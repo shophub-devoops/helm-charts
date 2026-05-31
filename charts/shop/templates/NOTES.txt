@@ -1,0 +1,17 @@
+Shop "{{ include "shop.fullname" . }}" created in namespace {{ .Release.Namespace }}.
+
+The shop-operator will reconcile it into a Deployment, Service, a {{ .Values.database }}
+database and monitoring. Track it with:
+
+  kubectl get shop {{ include "shop.fullname" . }} -n {{ .Release.Namespace }}
+  kubectl describe shop {{ include "shop.fullname" . }} -n {{ .Release.Namespace }}
+{{- if not .Values.walletAddress }}
+
+WARNING: walletAddress is empty — on-chain payment verification is disabled.
+Set it with --set walletAddress=0x... for a working storefront.
+{{- end }}
+{{- if not .Values.discord.webhookUrl }}
+
+(No Discord webhook configured — alerts won't route to Discord. Set
+discord.webhookUrl to enable.)
+{{- end }}
