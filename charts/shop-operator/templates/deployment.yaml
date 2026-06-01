@@ -26,6 +26,13 @@ spec:
         - name: manager
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: DEFAULT_SHOP_IMAGE
+              value: {{ .Values.shopImage | quote }}
+            - name: INGRESS_BASE_DOMAIN
+              value: {{ .Values.ingress.baseDomain | quote }}
+            - name: INGRESS_URL_PORT
+              value: {{ .Values.ingress.urlPort | quote }}
           args:
             - --health-probe-bind-address=:8081
             {{- if .Values.metricsService.enabled }}
