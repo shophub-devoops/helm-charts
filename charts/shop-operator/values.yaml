@@ -3,7 +3,7 @@
 image:
   # The shop-operator container image. Build with `make docker-build` in the
   # shop-operator repo, push to your registry, and set repository here.
-  repository: docker.io/shophub-devoops/shop-operator
+  repository: docker.io/urospetraskovic/shop-operator
   # Defaults to .Chart.AppVersion when empty.
   tag: ""
   pullPolicy: IfNotPresent
@@ -20,7 +20,7 @@ leaderElection: false
 # Image used for Shops that don't pin spec.image — the published unified Shop
 # image (Go backend that also serves the storefront SPA). Override to your
 # registry, e.g. docker.io/<you>/shop-backend:main.
-shopImage: docker.io/shophub-devoops/shop-backend:main
+shopImage: docker.io/urospetraskovic/shop-backend:main
 
 # Storefront ingress. A Shop is exposed at <name>.<baseDomain>; urlPort is an
 # optional ":port" appended to Status.URL when ingress is on a non-standard host
