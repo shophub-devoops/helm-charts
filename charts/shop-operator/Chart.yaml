@@ -2,7 +2,7 @@ apiVersion: v2
 name: shop-operator
 description: Kubernetes operator that orchestrates Shop applications for ShopHub.
 type: application
-version: 0.1.1
+version: 0.1.2
 appVersion: "0.1.1"
 kubeVersion: ">=1.30.0"
 home: https://github.com/shophub-devoops/shop-operator
