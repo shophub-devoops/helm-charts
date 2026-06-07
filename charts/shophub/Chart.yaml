@@ -2,5 +2,5 @@
 name: shophub
 description: ShopHub platform (backend + frontend) with prometheus-stack dependency
 type: application
-version: 0.1.0
-appVersion: "0.1.0"
+version: 0.1.1
+appVersion: "0.1.1"
