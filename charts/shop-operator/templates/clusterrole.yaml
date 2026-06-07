@@ -8,6 +8,13 @@ rules:
   - apiGroups: [""]
     resources: ["secrets", "serviceaccounts", "services"]
     verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
+  # The operator grants a per-tenant "mongodb-database" Role that the MongoDB
+  # community operator's pods require (get pods; patch/delete pods). Kubernetes
+  # RBAC escalation prevention only lets the operator grant verbs it holds
+  # itself, so it must hold these pod verbs here.
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "patch", "delete"]
   - apiGroups: ["apps"]
     resources: ["deployments"]
     verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
