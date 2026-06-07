@@ -3,7 +3,7 @@
 image:
   # The shop-operator container image. Build with `make docker-build` in the
   # shop-operator repo, push to your registry, and set repository here.
-  repository: docker.io/urospetraskovic/shop-operator
+  repository: docker.io/urospetraskovic/shop-operator-controller
   # Defaults to .Chart.AppVersion when empty.
   tag: ""
   pullPolicy: IfNotPresent
