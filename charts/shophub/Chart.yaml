@@ -1,6 +1,16 @@
 ﻿apiVersion: v2
 name: shophub
-description: ShopHub platform (backend + frontend) with prometheus-stack dependency
+description: ShopHub platform (backend + frontend). Emits a prometheus-operator ServiceMonitor and declares kube-prometheus-stack as an optional dependency (spec 3.3); the stack is normally installed cluster-wide via kube-state, so it is disabled here by default.
 type: application
-version: 0.1.1
+version: 0.1.2
 appVersion: "0.1.1"
+
+# kube-prometheus-stack is declared as an optional dependency (spec 3.3 "uses
+# prometheus-stack"). It is disabled by default because kube-state installs the
+# stack once cluster-wide; enable it (kube-prometheus-stack.enabled=true) only
+# for a self-contained install that bundles its own monitoring.
+dependencies:
+  - name: kube-prometheus-stack
+    version: "85.3.3"
+    repository: https://prometheus-community.github.io/helm-charts
+    condition: kube-prometheus-stack.enabled

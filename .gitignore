@@ -1,0 +1,3 @@
+# Vendored Helm chart dependencies. Resolved in CI (and locally) via
+# `helm dependency build` from the committed Chart.lock — not stored in git.
+charts/*/charts/*.tgz
