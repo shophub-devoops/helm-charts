@@ -6,7 +6,7 @@ metadata:
     {{- include "shop-operator.labels" . | nindent 4 }}
 rules:
   - apiGroups: [""]
-    resources: ["secrets", "serviceaccounts", "services"]
+    resources: ["configmaps", "secrets", "serviceaccounts", "services"]
     verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
   # The operator grants a per-tenant "mongodb-database" Role that the MongoDB
   # community operator's pods require (get pods; patch/delete pods). Kubernetes
