@@ -17,6 +17,19 @@ jobs:
         with:
           version: latest
 
+      - name: Build chart dependencies
+        run: |
+          set -e
+          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+          helm repo update
+          for chart in charts/*/; do
+            if [ -f "$chart/Chart.lock" ]; then
+              echo "::group::helm dependency build $chart"
+              helm dependency build "$chart"
+              echo "::endgroup::"
+            fi
+          done
+
       - name: Lint all charts
         run: |
           set -e
