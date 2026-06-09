@@ -29,6 +29,22 @@ ingress:
   baseDomain: localhost
   urlPort: ""
 
+# Per-tenant Grafana org provisioning (spec 4.1 optional). When url is set, the
+# operator creates a Grafana Organization per tenant namespace and imports that
+# tenant's Shop dashboard + datasources into it, so a ShopHub user sees only
+# their own dashboards. Leave url empty to disable (org sync becomes a no-op).
+grafana:
+  url: ""
+  adminUser: admin
+  # Provide EITHER adminPassword (chart creates a Secret) OR existingSecret.
+  adminPassword: ""
+  existingSecret: ""
+  passwordKey: admin-password
+  # In-cluster datasource targets recreated inside each tenant org (their UIDs
+  # must match the dashboard.json references).
+  prometheusUrl: http://kube-prometheus-stack-prometheus.monitoring:9090
+  lokiUrl: http://loki:3100
+
 resources:
   requests:
     cpu: 50m

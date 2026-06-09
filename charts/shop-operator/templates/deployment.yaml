@@ -33,6 +33,21 @@ spec:
               value: {{ .Values.ingress.baseDomain | quote }}
             - name: INGRESS_URL_PORT
               value: {{ .Values.ingress.urlPort | quote }}
+            {{- if .Values.grafana.url }}
+            - name: GRAFANA_URL
+              value: {{ .Values.grafana.url | quote }}
+            - name: GRAFANA_ADMIN_USER
+              value: {{ .Values.grafana.adminUser | quote }}
+            - name: GRAFANA_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.grafana.existingSecret | default (printf "%s-grafana" (include "shop-operator.fullname" .)) }}
+                  key: {{ .Values.grafana.passwordKey }}
+            - name: GRAFANA_PROMETHEUS_URL
+              value: {{ .Values.grafana.prometheusUrl | quote }}
+            - name: GRAFANA_LOKI_URL
+              value: {{ .Values.grafana.lokiUrl | quote }}
+            {{- end }}
           args:
             - --health-probe-bind-address=:8081
             {{- if .Values.metricsService.enabled }}

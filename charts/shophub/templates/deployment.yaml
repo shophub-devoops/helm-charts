@@ -35,6 +35,19 @@ spec:
                 secretKeyRef:
                   name: {{ include "shophub.fullname" . }}-jwt
                   key: jwt-secret
+            {{- if .Values.grafana.url }}
+            - name: GRAFANA_URL
+              value: {{ .Values.grafana.url | quote }}
+            - name: GRAFANA_EXTERNAL_URL
+              value: {{ .Values.grafana.externalUrl | quote }}
+            - name: GRAFANA_ADMIN_USER
+              value: {{ .Values.grafana.adminUser | quote }}
+            - name: GRAFANA_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.grafana.existingSecret | default (printf "%s-grafana" (include "shophub.fullname" .)) }}
+                  key: {{ .Values.grafana.passwordKey }}
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /probe/liveness

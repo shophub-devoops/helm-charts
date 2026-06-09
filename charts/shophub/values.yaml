@@ -35,6 +35,18 @@ database:
 # reinstalls or to share across replicas in multi-cluster setups.
 jwtSecret: ""
 
+# Per-tenant Grafana access (spec 4.1 optional). When url is set, registration
+# provisions a Grafana login scoped to the tenant's own org; the dashboard UI
+# offers an "Open Grafana" link via externalUrl. Leave url empty to disable.
+grafana:
+  url: ""          # in-cluster Grafana API, e.g. http://kube-prometheus-stack-grafana.monitoring
+  externalUrl: ""  # browser URL the tenant opens, e.g. http://grafana.localhost:8080
+  adminUser: admin
+  # Provide EITHER adminPassword (chart creates a Secret) OR existingSecret.
+  adminPassword: ""
+  existingSecret: ""
+  passwordKey: admin-password
+
 # ServiceMonitor registers the backend's /metrics with the (shared,
 # kube-state-managed) kube-prometheus-stack — spec 3.3 "uses prometheus-stack".
 serviceMonitor:
