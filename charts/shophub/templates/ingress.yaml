@@ -1,0 +1,29 @@
+{{- /*
+Ingress for the ShopHub platform UI + API. The unified image serves the SPA at
+"/" and the REST API under /api, so a single host rule covers both. On the
+local k3d cluster the loadbalancer's :80 maps to host :8080, making the
+platform reachable at http://shophub.localhost:8080.
+*/ -}}
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "shophub.fullname" . }}
+  labels:
+    {{- include "shophub.labels" . | nindent 4 }}
+spec:
+  {{- with .Values.ingress.className }}
+  ingressClassName: {{ . }}
+  {{- end }}
+  rules:
+    - host: {{ .Values.ingress.host | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "shophub.fullname" . }}
+                port:
+                  number: {{ .Values.service.port }}
+{{- end }}

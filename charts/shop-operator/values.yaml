@@ -20,7 +20,7 @@ leaderElection: false
 # Image used for Shops that don't pin spec.image — the published unified Shop
 # image (Go backend that also serves the storefront SPA). Override to your
 # registry, e.g. docker.io/<you>/shop-backend:main.
-shopImage: docker.io/urospetraskovic/shop-backend:0.1.1
+shopImage: docker.io/urospetraskovic/shop-backend:0.2.0
 
 # Storefront ingress. A Shop is exposed at <name>.<baseDomain>; urlPort is an
 # optional ":port" appended to Status.URL when ingress is on a non-standard host

@@ -25,6 +25,14 @@ serviceAccount:
 service:
   port: 8080
 
+# Ingress exposing the ShopHub UI + API (the unified image serves the SPA at
+# "/" and the REST API under /api). On local k3d the loadbalancer's :80 maps to
+# host :8080 → http://shophub.localhost:8080.
+ingress:
+  enabled: true
+  className: traefik
+  host: shophub.localhost
+
 # CloudNativePG Postgres for the users table (auth). The backend creates the
 # schema on startup; we just provision an empty database here.
 database:
@@ -34,6 +42,17 @@ database:
 # across upgrades (via lookup); set explicitly for a stable secret across
 # reinstalls or to share across replicas in multi-cluster setups.
 jwtSecret: ""
+
+# Platform-level Discord integration (one bot + one guild). When guildId is
+# set, users can opt a shop into a dedicated Discord notification channel: the
+# backend creates a DiscordChannel CR which the operator reconciles into a
+# channel + webhook. botTokenSecret points to an existing Secret (key: token)
+# holding the bot token — create it manually, never commit the token.
+discord:
+  guildId: ""
+  botTokenSecret:
+    name: ""
+    namespace: ""  # defaults to the release namespace
 
 # Per-tenant Grafana access (spec 4.1 optional). When url is set, registration
 # provisions a Grafana login scoped to the tenant's own org; the dashboard UI
