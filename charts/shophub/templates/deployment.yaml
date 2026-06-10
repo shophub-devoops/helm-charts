@@ -35,6 +35,14 @@ spec:
                 secretKeyRef:
                   name: {{ include "shophub.fullname" . }}-jwt
                   key: jwt-secret
+            {{- if .Values.discord.guildId }}
+            - name: DISCORD_GUILD_ID
+              value: {{ .Values.discord.guildId | quote }}
+            - name: DISCORD_BOT_TOKEN_SECRET_NAME
+              value: {{ .Values.discord.botTokenSecret.name | quote }}
+            - name: DISCORD_BOT_TOKEN_SECRET_NAMESPACE
+              value: {{ .Values.discord.botTokenSecret.namespace | default .Release.Namespace | quote }}
+            {{- end }}
             {{- if .Values.grafana.url }}
             - name: GRAFANA_URL
               value: {{ .Values.grafana.url | quote }}

@@ -19,6 +19,20 @@ rules:
   - apiGroups: ["apps.shophub.local"]
     resources: ["shops/status"]
     verbs: ["get"]
+  # Wallet CRs back the "generate a wallet for me" flow; ShopHub reads
+  # status.address once the operator publishes it.
+  - apiGroups: ["payments.shophub.local"]
+    resources: ["wallets"]
+    verbs: ["get", "list", "create", "delete"]
+  # DiscordChannel CRs back the per-shop notification channel opt-in.
+  - apiGroups: ["notify.shophub.local"]
+    resources: ["discordchannels"]
+    verbs: ["get", "list", "create", "delete"]
+  # Read tenant-namespace Secrets: the operator-generated <shop>-admin password
+  # shown to the shop owner in the dashboard.
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
