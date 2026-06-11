@@ -2,8 +2,8 @@
 name: shophub
 description: ShopHub platform (backend + frontend). Emits a prometheus-operator ServiceMonitor and declares kube-prometheus-stack as an optional dependency (spec 3.3); the stack is normally installed cluster-wide via kube-state, so it is disabled here by default.
 type: application
-version: 0.2.0
-appVersion: "0.2.0"
+version: 0.2.1
+appVersion: "0.2.1"
 
 # kube-prometheus-stack is declared as an optional dependency (spec 3.3 "uses
 # prometheus-stack"). It is disabled by default because kube-state installs the
